@@ -50,7 +50,7 @@ class BlogsController < ApplicationController
   end
 
   def blog_params
-    params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
+    params.require(:blog).permit(:title, :content, :secret, (current_user.premium? ? :random_eyecatch : nil))
   end
 
   def ensure_own_blog?
