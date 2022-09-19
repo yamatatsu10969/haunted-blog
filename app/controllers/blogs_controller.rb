@@ -5,6 +5,7 @@ class BlogsController < ApplicationController
 
   before_action :set_blog, only: %i[show edit update destroy]
   before_action :ensure_own_blog?, only: %i[edit update destroy]
+  before_action :authenticate_user_when_see_secret_blog, only: %i[show]
 
   def index
     @blogs = Blog.search(params[:term]).published.default_order
@@ -54,5 +55,11 @@ class BlogsController < ApplicationController
 
   def ensure_own_blog?
     raise ActiveRecord::RecordNotFound unless @blog.owned_by?(current_user)
+  end
+
+  def authenticate_user_when_see_secret_blog
+    return unless @blog.secret?
+
+    raise ActiveRecord::RecordNotFound unless user_signed_in?
   end
 end
