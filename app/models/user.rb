@@ -7,8 +7,4 @@ class User < ApplicationRecord
   has_many :likings, dependent: :destroy
 
   validates :nickname, uniqueness: true
-
-  def remove_email
-    self.email = nil
-  end
 end
