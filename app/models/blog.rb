@@ -17,8 +17,6 @@ class Blog < ApplicationRecord
     end
   }
 
-  scope :owned_by, ->(target_user) { where(user_id: target_user.id) }
-
   scope :search, lambda { |term|
     where('title LIKE ? OR content LIKE ?', "%#{term}%", "%#{term}%")
   }

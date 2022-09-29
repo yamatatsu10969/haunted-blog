@@ -3,14 +3,15 @@
 class BlogsController < ApplicationController
   skip_before_action :authenticate_user!, only: %i[index show]
 
-  before_action :set_accessible_blog, only: %i[show]
   before_action :set_own_blog, only: %i[edit update destroy]
 
   def index
     @blogs = Blog.search(params[:term]).published.default_order
   end
 
-  def show; end
+  def show
+    @blog = Blog.accessible_by(current_user).find(params[:id])
+  end
 
   def new
     @blog = Blog.new
@@ -44,12 +45,8 @@ class BlogsController < ApplicationController
 
   private
 
-  def set_accessible_blog
-    @blog = Blog.accessible_by(current_user).find(params[:id])
-  end
-
   def set_own_blog
-    @blog = Blog.owned_by(current_user).find(params[:id])
+    @blog = current_user.blogs.find(params[:id])
   end
 
   def blog_params
